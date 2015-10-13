@@ -1,6 +1,7 @@
 made with Yii 2 Basic Project 
 ============================
 
+Custom URI collection 
 
 DIRECTORY STRUCTURE
 -------------------
