@@ -3,17 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Radcheck;
-use app\models\Radreply;
+use app\models\Radacct;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\data\SqlDataProvider;
+
 /**
- * RadcheckController implements the CRUD actions for Radcheck model.
+ * RadacctController implements the CRUD actions for Radacct model.
  */
-class RadcheckController extends Controller
+class RadacctController extends Controller
 {
     public function behaviors()
     {
@@ -28,15 +27,13 @@ class RadcheckController extends Controller
     }
 
     /**
-     * Lists all Radcheck models.
+     * Lists all Radacct models.
      * @return mixed
      */
     public function actionIndex()
     {
-        //$dataProvider = new ActiveDataProvider(['query' => Radcheck::find()]);
-
-        $dataProvider = new SqlDataProvider([
-            'sql' => 'SELECT radcheck.username, radcheck.attribute, radcheck.op, radcheck.value, radreply.value AS reply FROM radcheck LEFT JOIN radreply ON (radreply.username = radcheck.username) ' ,
+        $dataProvider = new ActiveDataProvider([
+            'query' => Radacct::find(),
         ]);
 
         return $this->render('index', [
@@ -45,7 +42,7 @@ class RadcheckController extends Controller
     }
 
     /**
-     * Displays a single Radcheck model.
+     * Displays a single Radacct model.
      * @param string $id
      * @return mixed
      */
@@ -57,16 +54,16 @@ class RadcheckController extends Controller
     }
 
     /**
-     * Creates a new Radcheck model.
+     * Creates a new Radacct model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Radcheck();
+        $model = new Radacct();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->radacctid]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -75,7 +72,7 @@ class RadcheckController extends Controller
     }
 
     /**
-     * Updates an existing Radcheck model.
+     * Updates an existing Radacct model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -85,7 +82,7 @@ class RadcheckController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->radacctid]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -94,7 +91,7 @@ class RadcheckController extends Controller
     }
 
     /**
-     * Deletes an existing Radcheck model.
+     * Deletes an existing Radacct model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
@@ -107,15 +104,15 @@ class RadcheckController extends Controller
     }
 
     /**
-     * Finds the Radcheck model based on its primary key value.
+     * Finds the Radacct model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Radcheck the loaded model
+     * @return Radacct the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Radcheck::findOne($id)) !== null) {
+        if (($model = Radacct::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -40,12 +40,15 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+
             ['label' => 'Home', 'url' => ['/site/index']],
             ['label' => 'Payments', 'url' => ['/payments/index']],
             ['label' => 'Clients', 'url' => ['/clients/index']],
             ['label' => 'Suspense', 'url' => ['/suspense/index']],
             ['label' => 'Users', 'url' => ['/radiususers/index']],
             ['label' => 'Rates', 'url' => ['/bills/index']],
+            ['label' => 'Rad Check', 'url' => ['/radcheck/index']],
+            ['label' => 'Rad Usage', 'url' => ['/radacct/index']],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/site/login']] :
                 [

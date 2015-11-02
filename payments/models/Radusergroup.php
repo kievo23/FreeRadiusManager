@@ -18,7 +18,7 @@ class Radusergroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'radusergroup';
+        return 'usergroup';
     }
 
     /**

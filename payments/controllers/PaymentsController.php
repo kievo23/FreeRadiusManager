@@ -10,6 +10,9 @@ use app\models\Bills;
 use app\models\Radusergroup;
 use app\models\Radgroupcheck;
 use app\models\Radcheck;
+use app\models\Radreply;
+
+
 use app\search\PaymentsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -91,20 +94,20 @@ class PaymentsController extends Controller
                 $payment->save();
 
                 //IS THE CLIENT ACTIVE OR INACTIVE? BASED ON THE PROFILE
-                $customer_radgroup = Radusergroup::findOne(['username' => $customer->username]);
+                $customer_radreply = Radreply::findOne(['username' => $customer->username]);
                 //print_r($customer_radgroup);
                 //COLLECT ALL RADGROUPS
-                $radgroups = Radgroupcheck::find()->all();
+                
 
                 if($payment->mpesa_amount >= $billing->monthly_charge){
 
                     //IF USER WAS DISCONNECTED, AND HAS PAID MORE THAN THE BILLING AMOUNT, SAY: 3000, THEN ACTIVATE THAT USER
 
-                    if(count($customer_radgroup) >= 1){
-                        if($customer_radgroup->groupname == "daloRADIUS-Disabled-Users"){
+                    if(count($customer_radreply) >= 1){
+                        if($customer_radreply->username == $customer->username){
                             try {
                                 //Yii::$app->db->createCommand()->delete('radusergroup', ['username' => $customer->username])->execute();
-                                if($customer_radgroup->delete()){
+                                if($customer_radreply->delete()){
                                     echo "Deleted";
                                 }
                             } catch (Exception $e) {
@@ -292,6 +295,12 @@ class PaymentsController extends Controller
         $rate = $billing->monthly_charge/$number;
 
 
+        //ATTRIBUTES NEEDED FOR DIACTIVATION
+
+        $attribute = "Auth-Type";
+        $operation = ":=";
+        $value = "Reject";
+
         //BILL ALL THE CLIENTS WHOSE STATUS IS 'yes' THE SYSTEM EXCLUDES THE CLIENTS WITH NO.
         $clients = Clients::find()->where(['status' => 'yes'])->all();
 
@@ -307,21 +316,19 @@ class PaymentsController extends Controller
                 $client->save();
             }
 
-
-
             elseif ($rate > $client->balances) {
                 //DISCONNECT THE CLIENT
-                $customer_radgroup = Radusergroup::findOne(['username' => $client->username]);
+                $customer_radreply = Radreply::findOne(['username' => $client->username]);
 
-                $deactivate = Radgroupcheck::findOne(['id'=>1]);
-
-                if(count($customer_radgroup) >= 1){
+                if(count($customer_radreply) >= 1){
                     //DO NOTHING SINCE THE USER IS DEACTIVATED
                 }
                 else{
-                    $victim_client = new Radusergroup();
-                    $victim_client->username = $client->username;
-                    $victim_client->groupname = $deactivate->groupname;
+                    $victim_client = new Radreply();
+                    $victim_client->username    = $client->username;
+                    $victim_client->attribute   = $attribute;
+                    $victim_client->op          = $operation;
+                    $victim_client->value       = $value;
                     $victim_client->save();
                 }
             }
@@ -329,9 +336,9 @@ class PaymentsController extends Controller
 
             elseif(($billing->monthly_charge*4) > $client->balances && count(Radusergroup::findOne(['username' => $client->username]))==0){
                 //SEND SMSES AND EMAILS TO ALERT THE THAT DISCONNECTION IS ABOUT TO TRIGGER
-                $customer_radgroup = Radusergroup::findOne(['username' => $client->username]);
+               // $customer_radgroup = Radreply::findOne(['username' => $client->username]);
 
-                $deactivate = Radgroupcheck::findOne(['id'=>1]);
+               // $deactivate = Radgroupcheck::findOne(['id'=>1]);
                 $email = Yii::$app->mailer->compose()
                     ->setFrom('accountreceivables@fon.co.ke')
                     ->setTo('kelvinchege@gmail.com')

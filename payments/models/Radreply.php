@@ -3,9 +3,9 @@
 namespace app\models;
 
 use Yii;
-use app\models\Radreply;
+
 /**
- * This is the model class for table "radcheck".
+ * This is the model class for table "radreply".
  *
  * @property string $id
  * @property string $username
@@ -13,14 +13,14 @@ use app\models\Radreply;
  * @property string $op
  * @property string $value
  */
-class Radcheck extends \yii\db\ActiveRecord
+class Radreply extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'radcheck';
+        return 'radreply';
     }
 
     /**
@@ -47,10 +47,5 @@ class Radcheck extends \yii\db\ActiveRecord
             'op' => 'Op',
             'value' => 'Value',
         ];
-    }
-
-    public function getRadreply()
-    {
-        $this->hasOne(Radreply::className(), ['username' => 'username']);
     }
 }
